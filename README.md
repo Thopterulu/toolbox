@@ -3,7 +3,7 @@ collection of tools
 
 ## Scripts Description
 
-### FILIGRANE_GOUV.PY
+### PDF/FILIGRANE_GOUV.PY
 
 This script automates the process of adding a watermark to a PDF document using the website [filigrane.beta.gouv.fr](https://filigrane.beta.gouv.fr/). It performs the following steps:
 1. Prompts the user to enter the path to the folder containing the PDF file.
@@ -16,7 +16,7 @@ This script automates the process of adding a watermark to a PDF document using 
 8. Waits for the download link to appear and clicks it to download the watermarked PDF.
 9. Closes the web browser.
 
-### CONCAT_PDF.PY
+### PDF/CONCAT_PDF.PY
 
 This script merges multiple PDF files into a single PDF file using the PyPDF2 library. It performs the following steps:
 1. Prompts the user to enter the path to the folder containing the PDF files.
