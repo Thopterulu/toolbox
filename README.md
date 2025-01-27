@@ -26,3 +26,7 @@ This script merges multiple PDF files into a single PDF file using the PyPDF2 li
 5. Adds each PDF file from the list to the PdfFileMerger object.
 6. Writes the merged PDF to a new file named "merged_output.pdf" in the same folder.
 
+
+### timerz/clockify.py
+1. Takes env keys
+2. cut everyday a pause between 12 and 12:30
