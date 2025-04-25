@@ -28,5 +28,31 @@ This script merges multiple PDF files into a single PDF file using the PyPDF2 li
 
 
 ### timerz/clockify.py
-1. Takes env keys
-2. cut everyday a pause between 12 and 12:30
+A script to manage Clockify time entries with several features:
+
+1. Environment Setup:
+   - Requires API_KEY, WORKSPACE_ID, and USER_ID in env variables
+   - Uses Europe/Paris timezone by default
+
+2. Daily Schedule Features:
+   - Creates morning schedule with random start times (9:15-9:28)
+   - Automatically adds morning meetings (Standup and Planning)
+   - Splits day entries to add lunch break (12:00-12:30)
+   - Adds HPFO task at random time between 2-4 PM
+
+3. Time Cleanup (using `CLOCKIFY_ACTION=remove_nights`):
+   ```bash
+   CLOCKIFY_ACTION=remove_nights python timerz/clockify.py
+   ```
+   This command will:
+   - Process all entries from the last 2 weeks
+   - Remove weekend entries completely
+   - Remove work between 8 PM and 9 AM
+   - Split entries to add lunch breaks (12:00-12:30)
+   - Handle multi-day entries correctly
+
+4. Regular Mode (default):
+   ```bash
+   python timerz/clockify.py
+   ```
+   This will run the daily schedule creation with lunch breaks.
