@@ -1,0 +1,355 @@
+[
+    {
+      "summary": "Réveil & hydratation",
+      "start_time_str": "2025-05-05T06:30:00",
+      "duration_minutes": 30,
+      "description": "Se lever dès le réveil, boire 250 mL d’eau, 5 min d’étirements doux, 5 min de respiration et lumière du jour",
+      "location": "Maison",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Douche & soins express",
+      "start_time_str": "2025-05-05T07:00:00",
+      "duration_minutes": 10,
+      "description": "3 min douche alternance tiède/froide, 2 min nettoyage visage + brossage dents + crème hydratante/écran solaire",
+      "location": "Salle de bain",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Petit-déjeuner équilibré",
+      "start_time_str": "2025-05-05T07:10:00",
+      "duration_minutes": 15,
+      "description": "Préparation (2 min) + consommation (13 min) : protéines, fruits, céréales complètes",
+      "location": "Cuisine",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Planification du jour",
+      "start_time_str": "2025-05-05T07:25:00",
+      "duration_minutes": 5,
+      "description": "Revue agenda + priorités (3 min) + note Top 3 tâches (2 min)",
+      "location": "Bureau",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Travail (matin)",
+      "start_time_str": "2025-05-05T09:00:00",
+      "duration_minutes": 210,
+      "description": "Session de travail 9h–12h30",
+      "location": "Télétravail",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Pause déjeuner",
+      "start_time_str": "2025-05-05T12:30:00",
+      "duration_minutes": 30,
+      "description": "Préparation rapide + repas",
+      "location": "Cuisine",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Travail (après-midi)",
+      "start_time_str": "2025-05-05T13:00:00",
+      "duration_minutes": 240,
+      "description": "Session de travail 13h–17h",
+      "location": "Télétravail",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Transition & décompression",
+      "start_time_str": "2025-05-05T17:00:00",
+      "duration_minutes": 15,
+      "description": "Rangement rapide du poste + respiration/musique douce",
+      "location": "Bureau",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Séance sportive",
+      "start_time_str": "2025-05-05T17:15:00",
+      "duration_minutes": 45,
+      "description": "Échauffement (5 min) + exercice principal (30 min) + retour au calme/étirements (10 min)",
+      "location": "Salle de sport / Maison",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Douche & soins post-effort",
+      "start_time_str": "2025-05-05T18:00:00",
+      "duration_minutes": 10,
+      "description": "5 min douche tiède + 5 min hydratation peau et auto-massage",
+      "location": "Salle de bain",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Temps de détente / dîner",
+      "start_time_str": "2025-05-05T18:10:00",
+      "duration_minutes": 50,
+      "description": "Préparation repas (15 min) + dîner (35 min)",
+      "location": "Cuisine",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Projets personnels",
+      "start_time_str": "2025-05-05T19:00:00",
+      "duration_minutes": 90,
+      "description": "Travail créatif ou apprentissage",
+      "location": "Bureau",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Rangement rapide & hygiène",
+      "start_time_str": "2025-05-05T20:30:00",
+      "duration_minutes": 20,
+      "description": "Rangement espace commun (10 min) + brossage dents et soin visage (10 min)",
+      "location": "Maison",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Lecture / méditation",
+      "start_time_str": "2025-05-05T21:00:00",
+      "duration_minutes": 30,
+      "description": "Lecture légère ou méditation guidée",
+      "location": "Salon",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Préparation au sommeil",
+      "start_time_str": "2025-05-05T21:30:00",
+      "duration_minutes": 30,
+      "description": "Lumière tamisée (5 min), affirmations/gratitude (5 min), rideaux occultants/bruit blanc (5 min), déconnexion écrans (15 min)",
+      "location": "Chambre",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Rituel coucher",
+      "start_time_str": "2025-05-05T22:00:00",
+      "duration_minutes": 30,
+      "description": "Lecture courte ou relaxation musculaire",
+      "location": "Chambre",
+      "recurrence": "WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+    },
+    {
+      "summary": "Réveil & réhydratation",
+      "start_time_str": "2025-05-10T07:00:00",
+      "duration_minutes": 10,
+      "description": "Ouverture yeux + grand verre d’eau",
+      "location": "Maison"
+    },
+    {
+      "summary": "Étirements doux / yoga",
+      "start_time_str": "2025-05-10T07:10:00",
+      "duration_minutes": 15,
+      "description": "Salutation au soleil (10 min) + respiration consciente (5 min)",
+      "location": "Salon"
+    },
+    {
+      "summary": "Douche & soin gommage",
+      "start_time_str": "2025-05-10T07:25:00",
+      "duration_minutes": 15,
+      "description": "Douche tiède (5 min) + gommage corporel (5 min) + soin visage + hydratation (5 min)",
+      "location": "Salle de bain"
+    },
+    {
+      "summary": "Petit-déjeuner brunch",
+      "start_time_str": "2025-05-10T07:40:00",
+      "duration_minutes": 20,
+      "description": "Préparation rapide (5 min) + consommation (15 min)",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Projets perso",
+      "start_time_str": "2025-05-10T08:00:00",
+      "duration_minutes": 120,
+      "description": "Travail créatif / apprentissage / hobby",
+      "location": "Bureau"
+    },
+    {
+      "summary": "Loisirs & courses",
+      "start_time_str": "2025-05-10T10:00:00",
+      "duration_minutes": 150,
+      "description": "Courses, ménage léger ou sorties",
+      "location": "Extérieur"
+    },
+    {
+      "summary": "Brunch tardif",
+      "start_time_str": "2025-05-10T12:30:00",
+      "duration_minutes": 60,
+      "description": "Préparation & repas",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Temps libre / détente",
+      "start_time_str": "2025-05-10T13:30:00",
+      "duration_minutes": 150,
+      "description": "Sieste courte, famille, balade",
+      "location": "Maison"
+    },
+    {
+      "summary": "Sport léger",
+      "start_time_str": "2025-05-10T16:00:00",
+      "duration_minutes": 30,
+      "description": "Marche rapide ou yoga",
+      "location": "Extérieur / Salon"
+    },
+    {
+      "summary": "Douche & soins",
+      "start_time_str": "2025-05-10T16:30:00",
+      "duration_minutes": 30,
+      "description": "Douche rapide + massage pieds/jambes",
+      "location": "Salle de bain"
+    },
+    {
+      "summary": "Projets perso / détente",
+      "start_time_str": "2025-05-10T17:00:00",
+      "duration_minutes": 120,
+      "description": "Travaux perso modérés ou loisirs",
+      "location": "Bureau"
+    },
+    {
+      "summary": "Dîner léger",
+      "start_time_str": "2025-05-10T19:00:00",
+      "duration_minutes": 30,
+      "description": "Préparation (10 min) + repas (20 min)",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Rangement & hygiène soir",
+      "start_time_str": "2025-05-10T19:30:00",
+      "duration_minutes": 30,
+      "description": "Rangement léger + brossage dents + soin visage",
+      "location": "Maison"
+    },
+    {
+      "summary": "Lecture / méditation",
+      "start_time_str": "2025-05-10T20:00:00",
+      "duration_minutes": 60,
+      "description": "Lecture détente ou méditation",
+      "location": "Salon"
+    },
+    {
+      "summary": "Préparation semaine",
+      "start_time_str": "2025-05-10T21:00:00",
+      "duration_minutes": 60,
+      "description": "Planification planning, repas, tenue",
+      "location": "Bureau"
+    },
+    {
+      "summary": "Rituels coucher",
+      "start_time_str": "2025-05-10T22:00:00",
+      "duration_minutes": 30,
+      "description": "Relaxation, lumière tamisée, déconnexion écrans",
+      "location": "Chambre"
+    },
+
+    {
+      "summary": "Réveil & hydratation",
+      "start_time_str": "2025-05-11T07:00:00",
+      "duration_minutes": 10,
+      "description": "Lever + grand verre d’eau",
+      "location": "Maison"
+    },
+    {
+      "summary": "Yoga / mobilité douce",
+      "start_time_str": "2025-05-11T07:10:00",
+      "duration_minutes": 30,
+      "description": "Étirements ciblés & torsions",
+      "location": "Salon"
+    },
+    {
+      "summary": "Douche & soins",
+      "start_time_str": "2025-05-11T07:40:00",
+      "duration_minutes": 20,
+      "description": "Douche tiède + hydratation + soin pieds",
+      "location": "Salle de bain"
+    },
+    {
+      "summary": "Petit-déjeuner",
+      "start_time_str": "2025-05-11T08:00:00",
+      "duration_minutes": 30,
+      "description": "Préparation + repas",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Projets perso / hobby",
+      "start_time_str": "2025-05-11T08:30:00",
+      "duration_minutes": 150,
+      "description": "Planification de la semaine + hobby léger",
+      "location": "Bureau"
+    },
+    {
+      "summary": "Promenade / détente",
+      "start_time_str": "2025-05-11T11:00:00",
+      "duration_minutes": 90,
+      "description": "Marche douce en extérieur",
+      "location": "Extérieur"
+    },
+    {
+      "summary": "Déjeuner convivial",
+      "start_time_str": "2025-05-11T12:30:00",
+      "duration_minutes": 60,
+      "description": "Préparation & repas",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Temps libre / famille",
+      "start_time_str": "2025-05-11T13:30:00",
+      "duration_minutes": 150,
+      "description": "Sieste, rencontres familiales",
+      "location": "Maison"
+    },
+    {
+      "summary": "Sport très léger",
+      "start_time_str": "2025-05-11T16:00:00",
+      "duration_minutes": 30,
+      "description": "Danse ludique ou mini-séance cardio",
+      "location": "Salon"
+    },
+    {
+      "summary": "Douche & soins post-effort",
+      "start_time_str": "2025-05-11T16:30:00",
+      "duration_minutes": 30,
+      "description": "Douche rapide + massage",
+      "location": "Salle de bain"
+    },
+    {
+      "summary": "Préparation semaine",
+      "start_time_str": "2025-05-11T17:00:00",
+      "duration_minutes": 120,
+      "description": "Planning, choix tenue, lunchboxes",
+      "location": "Bureau"
+    },
+    {
+      "summary": "Dîner léger",
+      "start_time_str": "2025-05-11T19:00:00",
+      "duration_minutes": 30,
+      "description": "Préparation + repas",
+      "location": "Cuisine"
+    },
+    {
+      "summary": "Rangement & hygiène soir",
+      "start_time_str": "2025-05-11T19:30:00",
+      "duration_minutes": 30,
+      "description": "Rangement + brossage dents + soin visage",
+      "location": "Maison"
+    },
+    {
+      "summary": "Lecture / méditation",
+      "start_time_str": "2025-05-11T20:00:00",
+      "duration_minutes": 60,
+      "description": "Lecture légère ou méditation guidée",
+      "location": "Salon"
+    },
+    {
+      "summary": "Relaxation pré-coucher",
+      "start_time_str": "2025-05-11T21:00:00",
+      "duration_minutes": 60,
+      "description": "Affirmations, lumière tamisée, respiration",
+      "location": "Chambre"
+    },
+    {
+      "summary": "Rituels coucher",
+      "start_time_str": "2025-05-11T22:00:00",
+      "duration_minutes": 30,
+      "description": "Déconnexion écrans + relaxation musculaire",
+      "location": "Chambre"
+    }
+]
