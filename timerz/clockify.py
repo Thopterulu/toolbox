@@ -6,6 +6,7 @@ import random
 from dotenv import load_dotenv
 import os
 import logging
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -22,36 +23,36 @@ TIMEZONE = "Europe/Paris"
 
 BASE_URL = "https://api.clockify.me/api/v1"
 
-HEADERS = {
+HEADERS: Dict[str, Optional[str]] = {
     "X-Api-Key": API_KEY,
     "Content-Type": "application/json",
 }
 
 
-def get_time_entries(start_date=None, end_date=None):
+def get_time_entries(
+    start_date: Optional[datetime.datetime] = None,
+    end_date: Optional[datetime.datetime] = None,
+) -> List[Dict[str, Any]]:
     """Get time entries within a date range. If no dates provided, gets all entries."""
     url = f"{BASE_URL}/workspaces/{WORKSPACE_ID}/user/{USER_ID}/time-entries"
 
     # Convert to UTC for Clockify API
+    start_str: Optional[str] = None
     if start_date:
         start_utc = start_date.astimezone(datetime.timezone.utc)
         start_str = start_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-    else:
-        start_str = None
 
+    end_str: Optional[str] = None
     if end_date:
         end_utc = end_date.astimezone(datetime.timezone.utc)
         end_str = end_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-    else:
-        end_str = None
 
     # Clockify API expects dates in UTC format
-    params = {
-        "start": start_str,
-        "end": end_str,
-        "page-size": 5000,  # Get maximum entries per request
-    }
-    params = {k: v for k, v in params.items() if v is not None}
+    params: Dict[str, Any] = {"page-size": 5000}  # Get maximum entries per request
+    if start_str:
+        params["start"] = start_str
+    if end_str:
+        params["end"] = end_str
 
     logging.info(f"Fetching entries with params: {params}")
     response = requests.get(url, headers=HEADERS, params=params)
@@ -59,7 +60,7 @@ def get_time_entries(start_date=None, end_date=None):
     return response.json()
 
 
-def remove_night_entries():
+def remove_night_entries() -> None:
     """Remove time entries between 8 PM and 9 AM for the last 2 weeks"""
     today = datetime.datetime.now(ZoneInfo(TIMEZONE))
     two_weeks_ago = today - timedelta(days=14)
@@ -87,7 +88,7 @@ def remove_night_entries():
     logging.info(f"Finished processing {entries_processed} entries")
 
 
-def adjust_night_entry(entry):
+def adjust_night_entry(entry: Dict[str, Any]) -> None:
     """Split and adjust time entries to remove work during nights, weekends, and lunch"""
     logging.info(
         f"Processing entry: {entry.get('description', 'No description')} - ID: {entry.get('id', 'No ID')}"
@@ -117,7 +118,7 @@ def adjust_night_entry(entry):
 
     # Generate all 8 PM and 9 AM cutoffs between start and end time
     current_date = start_time.date()
-    entries_to_create = []
+    entries_to_create: List[Dict[str, Any]] = []
     current_segment_start = start_time
 
     while current_date <= end_time.date():
@@ -145,7 +146,7 @@ def adjust_night_entry(entry):
                 )
                 # Create a temporary entry for the segment
                 # Ensure proper ISO format with timezone
-                temp_entry = {
+                temp_entry: Dict[str, Any] = {
                     "timeInterval": {
                         "start": current_segment_start.astimezone(
                             datetime.timezone.utc
@@ -188,7 +189,11 @@ def adjust_night_entry(entry):
         requests.post(create_url, headers=HEADERS, json=new_entry)
 
 
-def split_time_entry(entry, create_entry=True, entries_to_create=None):
+def split_time_entry(
+    entry: Dict[str, Any],
+    create_entry: bool = True,
+    entries_to_create: Optional[List[Dict[str, Any]]] = None,
+) -> None:
     """Split entry at lunch time (12:00-12:30)
 
     Args:
@@ -227,7 +232,7 @@ def split_time_entry(entry, create_entry=True, entries_to_create=None):
         second_start = max(start_time, split_end)
 
         # Convert times to UTC and use proper ISO format
-        new_entries = [
+        new_entries_list: List[Dict[str, Any]] = [
             {
                 "start": start_time.astimezone(datetime.timezone.utc).strftime(
                     "%Y-%m-%dT%H:%M:%SZ"
@@ -242,7 +247,7 @@ def split_time_entry(entry, create_entry=True, entries_to_create=None):
         ]
 
         if end_time > split_end:
-            new_entries.append(
+            new_entries_list.append(
                 {
                     "start": second_start.astimezone(datetime.timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%SZ"
@@ -265,15 +270,16 @@ def split_time_entry(entry, create_entry=True, entries_to_create=None):
                 requests.delete(delete_url, headers=HEADERS)
 
             # Create the new entries via API
-            for new_entry in new_entries:
+            for new_entry_item in new_entries_list:
                 create_url = f"{BASE_URL}/workspaces/{WORKSPACE_ID}/time-entries"
-                requests.post(create_url, headers=HEADERS, json=new_entry)
+                requests.post(create_url, headers=HEADERS, json=new_entry_item)
         else:
             # Add to the provided list
-            entries_to_create.extend(new_entries)
+            if entries_to_create is not None:
+                entries_to_create.extend(new_entries_list)
     else:
         # If no split needed and we're not creating entries, add the original
-        if not create_entry:
+        if not create_entry and entries_to_create is not None:
             entries_to_create.append(
                 {
                     "start": start_time.astimezone(datetime.timezone.utc).strftime(
@@ -289,7 +295,7 @@ def split_time_entry(entry, create_entry=True, entries_to_create=None):
             )
 
 
-def get_default_project():
+def get_default_project() -> Optional[str]:
     """fallback method :
     1. Via l'interface web (en inspectant lURL)
 
@@ -314,99 +320,173 @@ def get_default_project():
     )  # marche pas avec shiroo, certains id sont hidden
 
 
-def create_time_entry(start_time, end_time, description):
+def create_time_entry(
+    start_time: datetime.datetime, end_time: datetime.datetime, description: str
+) -> None:
     create_url = f"{BASE_URL}/workspaces/{WORKSPACE_ID}/time-entries"
-    project_id = "6571c5455e233f2fc06a3b24"  # get_default_project()
+    project_id = "6571c5455e233f2fc06a3b24"  # Consider making this configurable or using get_default_project()
+
+    # Ensure times are in UTC and correct format for Clockify API
+    start_utc_str = start_time.astimezone(datetime.timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    end_utc_str = end_time.astimezone(datetime.timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
 
     payload = {
-        "start": start_time.isoformat(),
-        "end": end_time.isoformat(),
+        "start": start_utc_str,
+        "end": end_utc_str,
         "description": description,
         "projectId": project_id,
         "tagIds": [],
     }
     response = requests.post(create_url, headers=HEADERS, json=payload)
     response.raise_for_status()
+    logging.info(
+        f"Created entry: '{description}' from {start_time.strftime('%H:%M')} to {end_time.strftime('%H:%M')}"
+    )
 
 
-def add_morning_schedule():
-    today = datetime.datetime.now(ZoneInfo(TIMEZONE)).date()
+def add_morning_schedule(target_date_obj: datetime.date) -> None:
+    """Adds standard morning meetings and start of day entry for the given date."""
+    logging.info(f"Adding morning schedule for {target_date_obj.isoformat()}")
 
     # Random start between 9:15 and 9:28
     random_minutes = random.randint(15, 28)
     start_day = datetime.datetime.combine(
-        today, datetime.time(9, random_minutes), tzinfo=ZoneInfo(TIMEZONE)
+        target_date_obj, datetime.time(9, random_minutes), tzinfo=ZoneInfo(TIMEZONE)
     )
 
     # Create morning meetings
     meetings = [
         {
             "start": datetime.datetime.combine(
-                today, datetime.time(9, 30), tzinfo=ZoneInfo(TIMEZONE)
+                target_date_obj, datetime.time(9, 30), tzinfo=ZoneInfo(TIMEZONE)
             ),
             "end": datetime.datetime.combine(
-                today, datetime.time(9, 45), tzinfo=ZoneInfo(TIMEZONE)
+                target_date_obj, datetime.time(9, 45), tzinfo=ZoneInfo(TIMEZONE)
             ),
             "description": "Morning Standup",
         },
         {
             "start": datetime.datetime.combine(
-                today, datetime.time(9, 45), tzinfo=ZoneInfo(TIMEZONE)
+                target_date_obj, datetime.time(9, 45), tzinfo=ZoneInfo(TIMEZONE)
             ),
             "end": datetime.datetime.combine(
-                today, datetime.time(10, 0), tzinfo=ZoneInfo(TIMEZONE)
+                target_date_obj, datetime.time(10, 0), tzinfo=ZoneInfo(TIMEZONE)
             ),
             "description": "Team Planning",
         },
     ]
 
     # Create start of day entry
-    create_time_entry(start_day, meetings[0]["start"], "Start of Day")
+    if meetings:  # Ensure there's a meeting to mark the end of "Start of Day"
+        create_time_entry(start_day, meetings[0]["start"], "Start of Day")
 
     # Create meeting entries
     for meeting in meetings:
         create_time_entry(meeting["start"], meeting["end"], meeting["description"])
 
 
-def add_hpfo_task():
-    today = datetime.datetime.now(ZoneInfo(TIMEZONE)).date()
+def add_hpfo_task(target_date_obj: datetime.date) -> None:
+    """Adds a 15-minute HPFO task at a random time between 2 PM and 4 PM for the given date."""
+    logging.info(f"Adding HPFO task for {target_date_obj.isoformat()}")
 
     # Random time between 2 PM and 4 PM
     random_hour = random.randint(14, 15)  # 14 = 2 PM, 15 = 3 PM
-    random_minute = random.randint(0, 44)  # Ensures end time won't go past 4 PM
+    random_minute = random.randint(
+        0, 44
+    )  # Ensures end time (15 mins later) won't go past 4 PM if start is 3:44
 
     start_time = datetime.datetime.combine(
-        today, datetime.time(random_hour, random_minute), tzinfo=ZoneInfo(TIMEZONE)
+        target_date_obj,
+        datetime.time(random_hour, random_minute),
+        tzinfo=ZoneInfo(TIMEZONE),
     )
-    end_time = start_time + datetime.timedelta(minutes=15)
+    end_time = start_time + timedelta(minutes=15)
 
-    create_url = f"{BASE_URL}/workspaces/{WORKSPACE_ID}/time-entries"
+    # Using the specific project ID for HPFO as in the original script
+    hpfo_project_id = "60c9a33e33cb7c4047062b35"
+
+    start_utc_str = start_time.astimezone(datetime.timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    end_utc_str = end_time.astimezone(datetime.timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+
     payload = {
-        "start": start_time.isoformat(),
-        "end": end_time.isoformat(),
+        "start": start_utc_str,
+        "end": end_utc_str,
         "description": "HPFO",
-        "projectId": "60c9a33e33cb7c4047062b35",
+        "projectId": hpfo_project_id,
         "tagIds": [],
     }
+    create_url = f"{BASE_URL}/workspaces/{WORKSPACE_ID}/time-entries"
     response = requests.post(create_url, headers=HEADERS, json=payload)
     response.raise_for_status()
+    logging.info(
+        f"Created HPFO entry: {start_time.strftime('%H:%M')} to {end_time.strftime('%H:%M')}"
+    )
 
 
-def main():
+def autofill_workday(target_date_obj: datetime.date) -> None:
+    """Autofills a standard workday (9:00-12:00 and 12:30-17:00) for the given date."""
+    logging.info(f"Autofilling standard workday for {target_date_obj.isoformat()}")
+
+    work_start_morning = datetime.datetime.combine(
+        target_date_obj, datetime.time(9, 0), tzinfo=ZoneInfo(TIMEZONE)
+    )
+    lunch_start = datetime.datetime.combine(
+        target_date_obj, datetime.time(12, 0), tzinfo=ZoneInfo(TIMEZONE)
+    )
+    lunch_end = datetime.datetime.combine(
+        target_date_obj, datetime.time(12, 30), tzinfo=ZoneInfo(TIMEZONE)
+    )
+    work_end_afternoon = datetime.datetime.combine(
+        target_date_obj, datetime.time(17, 0), tzinfo=ZoneInfo(TIMEZONE)
+    )
+
+    create_time_entry(work_start_morning, lunch_start, "Work")
+    create_time_entry(lunch_end, work_end_afternoon, "Work")
+    logging.info(f"Completed autofill for {target_date_obj.isoformat()}")
+
+
+def main() -> None:
     # Choose function to run based on environment or argument
     action = os.getenv("CLOCKIFY_ACTION", "daily")
+    today_date_obj = datetime.datetime.now(ZoneInfo(TIMEZONE)).date()  # date object
 
     if action == "remove_nights":
         remove_night_entries()
-    else:
-        # Regular daily schedule
-        today = datetime.datetime.now(ZoneInfo(TIMEZONE)).date().isoformat()
-        add_morning_schedule()
-        add_hpfo_task()
-        entries = get_time_entries(today)
+    elif action == "autofill_specific_date":
+        date_str = os.getenv("CLOCKIFY_DATE")
+        if not date_str:
+            logging.error(
+                "CLOCKIFY_DATE environment variable not set for autofill_specific_date action."
+            )
+            return
+        try:
+            # Ensure we are working with a date object
+            target_date_obj = datetime.datetime.fromisoformat(date_str).date()
+        except ValueError:
+            logging.error(
+                f"Invalid date format for CLOCKIFY_DATE: {date_str}. Use YYYY-MM-DD."
+            )
+            return
 
-        for entry in entries:
-            split_time_entry(entry)
+        if target_date_obj.weekday() >= 5:  # Monday is 0 and Sunday is 6
+            logging.info(
+                f"Skipping autofill for weekend date: {target_date_obj.isoformat()}"
+            )
+            return
+
+        autofill_workday(target_date_obj)
+    else:  # Default "daily" action
+        logging.info(f"Running daily schedule for {today_date_obj.isoformat()}")
+        add_morning_schedule(today_date_obj)
+        add_hpfo_task(today_date_obj)
 
 
 if __name__ == "__main__":
