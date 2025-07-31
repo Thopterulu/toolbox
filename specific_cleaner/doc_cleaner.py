@@ -17,6 +17,11 @@ DOC_EXTENSIONS = [
     ".thm",
     ".lrv",
     ".poh",
+    ".csv",
+    ".xlsm",
+    ".xls",
+    ".adx",
+    ".axd",
 ]
 
 
