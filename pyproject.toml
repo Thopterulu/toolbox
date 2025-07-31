@@ -16,3 +16,6 @@ google_calendar = [
     "google-auth-httplib2",
     "google-auth-oauthlib",
 ]
+duplicate_finder = [
+    "xxhash>=3.0.0",
+]
