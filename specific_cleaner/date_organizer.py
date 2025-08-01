@@ -19,13 +19,13 @@ def organize_files_by_date(path: str) -> None:
 
     moved_count = 0
     error_count = 0
-    
+
     # Get all existing date directories to avoid moving them
     existing_date_dirs = set()
     for item in target_path.iterdir():
-        if item.is_dir() and len(item.name) == 10 and item.name.count('-') == 2:
+        if item.is_dir() and len(item.name) == 10 and item.name.count("-") == 2:
             try:
-                datetime.strptime(item.name, '%Y-%m-%d')
+                datetime.strptime(item.name, "%Y-%m-%d")
                 existing_date_dirs.add(item.name)
             except ValueError:
                 pass
@@ -37,7 +37,11 @@ def organize_files_by_date(path: str) -> None:
             relative_parts = file_path.relative_to(target_path).parts
             if len(relative_parts) > 1 and relative_parts[0] in existing_date_dirs:
                 continue
-                
+
+            # Skip files in $RECYCLE.BIN directories
+            if len(relative_parts) > 1 and relative_parts[0] == "$RECYCLE.BIN":
+                continue
+
             try:
                 mod_time = datetime.fromtimestamp(file_path.stat().st_mtime)
                 date_folder = mod_time.strftime("%Y-%m-%d")

@@ -2,27 +2,149 @@
 
 import os
 import sys
+import re
 from pathlib import Path
+import fnmatch
 
 
 DOC_EXTENSIONS = [
-    ".doc",
-    ".docx",
+    ".adx",
+    ".axd",
+    ".csv",
+    ".conf*",
+    ".dat",
+    # ".doc",
+    # ".docx",
     ".md",
     ".ini",
     ".lnk",
     ".sav",
     ".dll",
     ".gif",
+    ".ico",
+    ".js",
+    ".json*",
+    ".lnk",
+    ".log",
     ".thm",
     ".lrv",
+    ".md",
+    ".msc",
     ".poh",
+    ".sav",
+    ".thm",
+    ".wks",
     ".csv",
     ".xlsm",
     ".xls",
     ".adx",
     ".axd",
+    ".dat",
+    ".json",
+    ".xml",
+    ".log",
+    ".wks",
+    ".ico",
+    ".dat",
+    ".js",
+    ".msg",
+    ".téléchargement",
+    ".php",
+    ".bat",
+    ".ps",
+    ".xmind",
+    ".sqlite*",
+    ".metadata",
+    ".lua",
 ]
+
+PROGRAMMING_EXTENSIONS = [
+    ".lua",
+    ".js",
+    ".ts",
+    ".py",
+    ".go",
+    ".java",
+    ".c",
+    ".cpp",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".rb",
+    ".php",
+    ".swift",
+    ".kt",
+    ".rs",
+    ".scala",
+    ".sh",
+    ".ps1",
+    ".r",
+    ".m",
+    ".pl",
+    ".sql",
+    ".css",
+    ".scss",
+    ".sass",
+    ".less",
+    ".vue",
+    ".jsx",
+    ".tsx",
+    ".dart",
+    ".elm",
+    ".clj",
+    ".ex",
+    ".exs",
+    ".hs",
+    ".ml",
+    ".fs",
+    ".vb",
+    ".pas",
+    ".asm",
+    ".s",
+]
+
+
+def matches_extension(file_extension: str, extension_patterns: list[str]) -> bool:
+    """Check if file extension matches any pattern in the list, supporting wildcards."""
+    for pattern in extension_patterns:
+        if "*" in pattern:
+            if fnmatch.fnmatch(file_extension, pattern):
+                return True
+        else:
+            if file_extension == pattern:
+                return True
+    return False
+
+
+def contains_uuid_pattern(filename: str) -> bool:
+    """Check if filename contains a UUID pattern like 0785B20-3CDD-41CD-9B21-82D45AB240B2."""
+    uuid_pattern = (
+        r"[0-9A-Fa-f]{7,8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
+    )
+    return bool(re.search(uuid_pattern, filename))
+
+
+def should_remove_uuid_file(file_path: Path, all_extensions: list[str]) -> tuple[bool, str]:
+    """Check if UUID file should be removed based on path in first line."""
+    try:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            first_line = f.readline().strip()
+
+        # Remove spaces between characters to reconstruct the path
+        path_without_spaces = first_line.replace(" ", "")
+
+        # Extract potential file extension from the reconstructed path
+        # Look for pattern like ".JPG" or ".jpg" etc.
+        extension_match = re.search(r"\.([A-Za-z0-9]+)", path_without_spaces)
+        if extension_match:
+            extension = "." + extension_match.group(1).lower()
+            should_remove = matches_extension(extension, all_extensions)
+            return should_remove, extension
+
+        return False, ""
+    except (IOError, UnicodeDecodeError, PermissionError):
+        # If we can't read the file, don't remove it based on content
+        return False, ""
 
 
 def clean_doc_files(path: str) -> None:
@@ -38,11 +160,27 @@ def clean_doc_files(path: str) -> None:
 
     removed_count = 0
 
+    all_extensions = DOC_EXTENSIONS + PROGRAMMING_EXTENSIONS
+
     for file_path in target_path.rglob("*"):
-        if file_path.is_file() and file_path.suffix.lower() in DOC_EXTENSIONS:
+        should_remove = False
+        removal_reason = ""
+
+        if file_path.is_file():
+            # Check if file has matching extension
+            if matches_extension(file_path.suffix.lower(), all_extensions):
+                should_remove = True
+                removal_reason = f"extension {file_path.suffix.lower()}"
+            # Check if file has UUID pattern and should be removed based on first line
+            elif contains_uuid_pattern(file_path.name):
+                should_remove, found_extension = should_remove_uuid_file(file_path, all_extensions)
+                if should_remove:
+                    removal_reason = f"UUID file with extension {found_extension}"
+
+        if should_remove:
             try:
                 file_path.unlink()
-                print(f"Removed: {file_path}")
+                print(f"Removed: {file_path} ({removal_reason})")
                 removed_count += 1
             except OSError as e:
                 print(f"Error removing {file_path}: {e}")
