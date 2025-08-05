@@ -5,6 +5,8 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 
+DATE_FOLDER_FORMAT = "%Y-%m"
+
 
 def organize_files_by_date(path: str) -> None:
     target_path = Path(path)
@@ -25,7 +27,7 @@ def organize_files_by_date(path: str) -> None:
     for item in target_path.iterdir():
         if item.is_dir() and len(item.name) == 10 and item.name.count("-") == 2:
             try:
-                datetime.strptime(item.name, "%Y-%m-%d")
+                datetime.strptime(item.name, DATE_FOLDER_FORMAT)
                 existing_date_dirs.add(item.name)
             except ValueError:
                 pass
@@ -44,7 +46,7 @@ def organize_files_by_date(path: str) -> None:
 
             try:
                 mod_time = datetime.fromtimestamp(file_path.stat().st_mtime)
-                date_folder = mod_time.strftime("%Y-%m-%d")
+                date_folder = mod_time.strftime(DATE_FOLDER_FORMAT)
 
                 dest_dir = target_path / date_folder
                 dest_dir.mkdir(exist_ok=True)

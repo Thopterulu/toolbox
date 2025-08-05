@@ -56,6 +56,12 @@ DOC_EXTENSIONS = [
     ".sqlite*",
     ".metadata",
     ".lua",
+    ".msi",
+    ".exe",
+    ".tmp",
+    ".err",
+    ".bin",
+    ".dbf",
 ]
 
 PROGRAMMING_EXTENSIONS = [
@@ -124,27 +130,9 @@ def contains_uuid_pattern(filename: str) -> bool:
     return bool(re.search(uuid_pattern, filename))
 
 
-def should_remove_uuid_file(file_path: Path, all_extensions: list[str]) -> tuple[bool, str]:
-    """Check if UUID file should be removed based on path in first line."""
-    try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            first_line = f.readline().strip()
-
-        # Remove spaces between characters to reconstruct the path
-        path_without_spaces = first_line.replace(" ", "")
-
-        # Extract potential file extension from the reconstructed path
-        # Look for pattern like ".JPG" or ".jpg" etc.
-        extension_match = re.search(r"\.([A-Za-z0-9]+)", path_without_spaces)
-        if extension_match:
-            extension = "." + extension_match.group(1).lower()
-            should_remove = matches_extension(extension, all_extensions)
-            return should_remove, extension
-
-        return False, ""
-    except (IOError, UnicodeDecodeError, PermissionError):
-        # If we can't read the file, don't remove it based on content
-        return False, ""
+def should_remove_uuid_file(file_path: Path) -> bool:
+    """Check if UUID file should be removed (always true for UUID pattern files)."""
+    return True
 
 
 def clean_doc_files(path: str) -> None:
@@ -171,11 +159,11 @@ def clean_doc_files(path: str) -> None:
             if matches_extension(file_path.suffix.lower(), all_extensions):
                 should_remove = True
                 removal_reason = f"extension {file_path.suffix.lower()}"
-            # Check if file has UUID pattern and should be removed based on first line
+            # Check if file has UUID pattern and remove it
             elif contains_uuid_pattern(file_path.name):
-                should_remove, found_extension = should_remove_uuid_file(file_path, all_extensions)
+                should_remove = should_remove_uuid_file(file_path)
                 if should_remove:
-                    removal_reason = f"UUID file with extension {found_extension}"
+                    removal_reason = "UUID pattern file"
 
         if should_remove:
             try:
